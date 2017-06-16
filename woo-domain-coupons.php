@@ -120,8 +120,7 @@ function save_domain_restriction_data($post_id, $coupon){
           $form_email = $posted['billing_email'];
           array_push($cust_domain,find_domain($form_email));
           if (0==sizeof(array_intersect($cust_domain,$domains))){
-            wc_add_notice ("This coupon cannot be applied since this code is reserved for ".$label.". Please use your ".$label." email address to use this code.",'error');
-            wc_add_notice ("Email Domain used: ".json_encode($cust_domain)."<br>Coupon Domains: ".json_encode($domains),'notice');
+            wc_add_notice ("A coupon was removed from your order. This coupon cannot be applied since this code is reserved for ".$label.". <b>Please use your ".$label." email address and re-apply the coupon</b> if you wish to use this coupon.",'error');
             $cart->remove_coupon ($code);
             WC()->session->set('refresh_totals',true);
             $cart->calculate_totals();
