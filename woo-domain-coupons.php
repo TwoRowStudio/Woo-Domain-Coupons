@@ -9,7 +9,7 @@ Text Domain: woo_domain_coupons
 
 
 /*************************************************************************/
-/* Woo Domain Coupons (WDC) Plugin                                       */      */
+/* Woo Domain Coupons (WDC) Plugin                                       */
 /*                                                                       */
 /* Plugin to extend the restrictions for WooCommerce Coupons to a        */
 /* specific domains for a customer's registered email address            */
