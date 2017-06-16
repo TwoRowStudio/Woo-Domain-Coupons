@@ -1,18 +1,32 @@
 <?php
 /*
-Plugin Name: Woo Domain Coupons
+Plugin Name: Woo Domain Coupons (WDC)
 Description: Allows Woo Coupons to be restricted by domain
-Version: 0.01.00
+Version: 0.01.01
 Author: Two Row Studio
 Text Domain: woo_domain_coupons
 */
 
 
 /*************************************************************************/
-/* Woo Domain Coupons Plugin                                             */
+/* Woo Domain Coupons (WDC) Plugin                                       */      */
 /*                                                                       */
 /* Plugin to extend the restrictions for WooCommerce Coupons to a        */
 /* specific domains for a customer's registered email address            */
+/*                                                                       */
+/*                                                                       */
+/* WDC is free software: you can redistribute it and/or modify           */
+/* it under the terms of the GNU General Public License as published by  */
+/* the Free Software Foundation, either version 2 of the License, or     */
+/* any later version.                                                    */
+/*                                                                       */
+/* WDC is distributed in the hope that it will be useful,                */
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of        */
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          */
+/* GNU General Public License for more details.                          */
+/*                                                                       */
+/* You should have received a copy of the GNU General Public License     */
+/* along with WDC. If not, see http://www.gnu.org/licenses/gpl.html.     */
 /*************************************************************************/
 
 defined ('ABSPATH') or die('No Direct access!');
