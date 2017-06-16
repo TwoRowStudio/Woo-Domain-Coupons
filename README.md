@@ -1,5 +1,11 @@
+=== Woo Domain Coupons ===
+Contributors: eric.groft-tworow
+Tags: woocommerce,coupons,restricted offers
+License: GNU GENERAL PUBLIC LICENSE
+License URI: http://www.gnu.org/licenses/gpl.html
+
 # Woo-Domain-Coupons
-Initial test release of plugin to extend Coupons in WooCommerce to restrict them to a specific domain's email addresses
+Simple plugin to extend Coupons in WooCommerce to restrict them to a specific domain's email addresses
 
 
 The plugin adds a panel to the WooCommerce Coupon panel to restrict the coupon to a specific domain and provide a Customer label.
