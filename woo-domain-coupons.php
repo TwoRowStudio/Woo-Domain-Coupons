@@ -2,7 +2,7 @@
 /*
 Plugin Name: Woo Domain Coupons (WDC)
 Description: Allows Woo Coupons to be restricted by domain
-Version: 0.01.01
+Version: 0.01.02
 Author: Two Row Studio
 Text Domain: woo_domain_coupons
 */
@@ -55,8 +55,8 @@ if (! function_exists ('add_domain_restriction_section') ){
 
 add_action('woocommerce_coupon_data_panels','add_domain_restriction_settings',10,2);
 
-if (! function_exists ('add_domain_restriction_settings') ){
-  function add_domain_restriction_settings($coupon_id,$coupon){
+if (! function_exists ('wdc_add_domain_restriction_settings') ){
+  function wdc_add_domain_restriction_settings($coupon_id,$coupon){
     ?>
     <div id="domain_restriction_data" class="panel woocommerce_options_panel"><?php
     $label = get_post_meta($coupon_id,'_wdc_cust_label',true);
@@ -90,11 +90,11 @@ if (! function_exists ('add_domain_restriction_settings') ){
 
 //save domain restriction domain restriction data
 
-add_action('woocommerce_coupon_options_save','save_domain_restriction_data',20,2);
+add_action('woocommerce_coupon_options_save','wdc_save_domain_restriction_data',20,2);
 
-function save_domain_restriction_data($post_id, $coupon){
-  $data['_wdc_cust_label'] = $_POST['dom_restrict_cust_label'];
-  $data['_wdc_cust_domain'] = $_POST['dom_restrict_domain'];
+function wdc_save_domain_restriction_data($post_id, $coupon){
+  $data['_wdc_cust_label'] = sanitize_text_field($_POST['dom_restrict_cust_label']);
+  $data['_wdc_cust_domain'] = sanitize_text_field($_POST['dom_restrict_domain']);
 
   foreach ($data as $key=>$value){
     if (get_post_meta($post_id,$key,true)) {
@@ -110,9 +110,9 @@ function save_domain_restriction_data($post_id, $coupon){
 
 }
 
-  add_action('woocommerce_after_checkout_validation','check_domain_coupon',2);
+  add_action('woocommerce_after_checkout_validation','wdc_check_domain_coupon',2);
 
-  function check_domain_coupon($posted){
+  function wdc_check_domain_coupon($posted){
     $cart = new WC_Cart();
     $cart->get_cart_from_session();
     if (! empty($cart->applied_coupons)){
@@ -129,7 +129,7 @@ function save_domain_restriction_data($post_id, $coupon){
           if (is_user_logged_in()){
             $current_user = wp_get_current_user();
             $cust_email = $current_user->user_email;
-            $cust_domain[] = find_domain($cust_email);
+            $cust_domain[] = wdc_find_domain($cust_email);
           }
           $form_email = $posted['billing_email'];
           array_push($cust_domain,find_domain($form_email));
@@ -145,7 +145,7 @@ function save_domain_restriction_data($post_id, $coupon){
     }
   }
 
-  function find_domain ($email){
+  function wdc_find_domain ($email){
     $dom_delimit = strpos($email,"@");
     $domain = substr($email,$dom_delimit+1);
     return $domain;
