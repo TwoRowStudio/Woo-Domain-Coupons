@@ -2,7 +2,7 @@
 /*
 Plugin Name: Woo Domain Coupons (WDC)
 Description: Allows Woo Coupons to be restricted by domain
-Version: 0.01.01
+Version: 1.00.00
 Author: Two Row Studio
 Text Domain: woo_domain_coupons
 */
@@ -34,29 +34,27 @@ defined ('ABSPATH') or die('No Direct access!');
 define('WDC_BASE_DIR',plugin_dir_path(__FILE__));
 define('WDC_BASE_URL',plugin_dir_url(__FILE__));
 
-add_action('admin_enqueue_scripts','enqueue_WDC_styles');
+add_action('admin_enqueue_scripts','enqueue_woodomaincoup_styles');
 
-function enqueue_WDC_styles(){
+function enqueue_woodomaincoup_styles(){
   wp_enqueue_style('WDC_styles',WDC_BASE_URL.'/assets/css/woo_domain_coupon.css');
 }
 
-add_filter( 'woocommerce_coupon_data_tabs','add_domain_restriction_section',20,1);
+add_filter( 'woocommerce_coupon_data_tabs','woodomaincoup_add_domain_restriction_section',20,1);
 
-if (! function_exists ('add_domain_restriction_section') ){
-  function add_domain_restriction_section($sections){
-    $sections['domain_restriction'] = array(
-        'label' => __('Domain Specific Coupons','woo_domain_coupons'),
-        'target' => 'domain_restriction_data',
-        'class' => 'domain_restriction_data',
-    );
-    return $sections;
-  }
+function woodomaincoup_add_domain_restriction_section($sections){
+  $sections['domain_restriction'] = array(
+      'label' => __('Domain Specific Coupons','woo_domain_coupons'),
+      'target' => 'domain_restriction_data',
+      'class' => 'domain_restriction_data',
+  );
+  return $sections;
 }
 
-add_action('woocommerce_coupon_data_panels','add_domain_restriction_settings',10,2);
 
-if (! function_exists ('add_domain_restriction_settings') ){
-  function add_domain_restriction_settings($coupon_id,$coupon){
+add_action('woocommerce_coupon_data_panels','woodomaincoup_add_domain_restriction_settings',10,2);
+
+  function woodomaincoup_add_domain_restriction_settings($coupon_id,$coupon){
     ?>
     <div id="domain_restriction_data" class="panel woocommerce_options_panel"><?php
     $label = get_post_meta($coupon_id,'_wdc_cust_label',true);
@@ -86,15 +84,14 @@ if (! function_exists ('add_domain_restriction_settings') ){
     echo'<p>If a domain is set here for this coupon, only email addresses with that domain will be able to use the coupon.</p>';
     echo '</div></div>';
   }
-}
 
 //save domain restriction domain restriction data
 
-add_action('woocommerce_coupon_options_save','save_domain_restriction_data',20,2);
+add_action('woocommerce_coupon_options_save','woodomaincoup_save_domain_restriction_data',20,2);
 
-function save_domain_restriction_data($post_id, $coupon){
-  $data['_wdc_cust_label'] = $_POST['dom_restrict_cust_label'];
-  $data['_wdc_cust_domain'] = $_POST['dom_restrict_domain'];
+function woodomaincoup_save_domain_restriction_data($post_id, $coupon){
+  $data['_wdc_cust_label'] = sanitize_text_field($_POST['dom_restrict_cust_label']);
+  $data['_wdc_cust_domain'] = sanitize_text_field($_POST['dom_restrict_domain']);
 
   foreach ($data as $key=>$value){
     if (get_post_meta($post_id,$key,true)) {
@@ -110,9 +107,9 @@ function save_domain_restriction_data($post_id, $coupon){
 
 }
 
-  add_action('woocommerce_after_checkout_validation','check_domain_coupon',2);
+  add_action('woocommerce_after_checkout_validation','woodomaincoup_check_domain_coupon',2);
 
-  function check_domain_coupon($posted){
+  function woodomaincoup_check_domain_coupon($posted){
     $cart = new WC_Cart();
     $cart->get_cart_from_session();
     if (! empty($cart->applied_coupons)){
@@ -122,6 +119,9 @@ function save_domain_restriction_data($post_id, $coupon){
         $coupon_id = wc_get_coupon_id_by_code($code);
         $coupon = new WC_Coupon($code);
         $domain = get_post_meta($coupon_id,'_wdc_cust_domain',true);
+        if ($domain =='' || !$domain){ // quit check on coupon if not domain restricted
+          continue;
+        }
         $label = get_post_meta($coupon_id,'_wdc_cust_label',true);
         array_push($domains,$domain);
         if ($domains){
@@ -129,10 +129,10 @@ function save_domain_restriction_data($post_id, $coupon){
           if (is_user_logged_in()){
             $current_user = wp_get_current_user();
             $cust_email = $current_user->user_email;
-            $cust_domain[] = find_domain($cust_email);
+            $cust_domain[] = woodomaincoup_find_domain($cust_email);
           }
           $form_email = $posted['billing_email'];
-          array_push($cust_domain,find_domain($form_email));
+          array_push($cust_domain,woodomaincoup_find_domain($form_email));
           if (0==sizeof(array_intersect($cust_domain,$domains))){
             wc_add_notice ("A coupon was removed from your order. This coupon cannot be applied since this code is reserved for ".$label.". <b>Please use your ".$label." email address and re-apply the coupon</b> if you wish to use this coupon.",'error');
             $cart->remove_coupon ($code);
@@ -145,7 +145,7 @@ function save_domain_restriction_data($post_id, $coupon){
     }
   }
 
-  function find_domain ($email){
+  function woodomaincoup_find_domain ($email){
     $dom_delimit = strpos($email,"@");
     $domain = substr($email,$dom_delimit+1);
     return $domain;
