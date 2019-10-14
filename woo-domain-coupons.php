@@ -2,7 +2,7 @@
 /*
 Plugin Name: Woo Domain Coupons (WDC)
 Description: Allows Woo Coupons to be restricted by domain
-Version: 1.00.00
+Version: 1.01.00
 Author: Two Row Studio
 Text Domain: woo_domain_coupons
 */
@@ -109,7 +109,7 @@ function woodomaincoup_save_domain_restriction_data($post_id, $coupon){
 
   add_action('woocommerce_after_checkout_validation','woodomaincoup_check_domain_coupon',2);
 
-  function woodomaincoup_check_domain_coupon($posted){
+  function woodomaincoup_check_domain_coupon($posted, $errors=null){
     $cart = new WC_Cart();
     $cart->get_cart_from_session();
     if (! empty($cart->applied_coupons)){
@@ -122,8 +122,10 @@ function woodomaincoup_save_domain_restriction_data($post_id, $coupon){
         if ($domain =='' || !$domain){ // quit check on coupon if not domain restricted
           continue;
         }
-        $label = get_post_meta($coupon_id,'_wdc_cust_label',true);
         array_push($domains,$domain);
+      }
+      foreach($coupons as $code){
+      $label = get_post_meta($coupon_id,'_wdc_cust_label',true);
         if ($domains){
           $cust_domain = array();
           if (is_user_logged_in()){
@@ -133,7 +135,7 @@ function woodomaincoup_save_domain_restriction_data($post_id, $coupon){
           }
           $form_email = $posted['billing_email'];
           array_push($cust_domain,woodomaincoup_find_domain($form_email));
-          if (0==sizeof(array_intersect($cust_domain,$domains))){
+          if (0!=sizeof(array_intersect($cust_domain,$domains))){
             wc_add_notice ("A coupon was removed from your order. This coupon cannot be applied since this code is reserved for ".$label.". <b>Please use your ".$label." email address and re-apply the coupon</b> if you wish to use this coupon.",'error');
             $cart->remove_coupon ($code);
             WC()->session->set('refresh_totals',true);
