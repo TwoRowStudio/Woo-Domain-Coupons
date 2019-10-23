@@ -2,7 +2,7 @@
 /*
 Plugin Name: Woo Domain Coupons (WDC)
 Description: Allows Woo Coupons to be restricted by domain
-Version: 1.01.00
+Version: 1.02.00
 Author: Two Row Studio
 Text Domain: woo_domain_coupons
 */
@@ -135,7 +135,8 @@ function woodomaincoup_save_domain_restriction_data($post_id, $coupon){
           }
           $form_email = $posted['billing_email'];
           array_push($cust_domain,woodomaincoup_find_domain($form_email));
-          if (0!=sizeof(array_intersect($cust_domain,$domains))){
+          error_log('matched domains: '.sizeof(array_intersect($cust_domain,$domains)));
+          if (0>=sizeof(array_intersect($cust_domain,$domains))){
             wc_add_notice ("A coupon was removed from your order. This coupon cannot be applied since this code is reserved for ".$label.". <b>Please use your ".$label." email address and re-apply the coupon</b> if you wish to use this coupon.",'error');
             $cart->remove_coupon ($code);
             WC()->session->set('refresh_totals',true);
