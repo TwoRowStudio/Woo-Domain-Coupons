@@ -2,8 +2,8 @@
 Contributors: tworowstudio
 Tags: woocommerce,coupons,restricted offers
 Requires at least: 3.0
-Tested up to: 5.2.3
-Stable tag: 1.01.00
+Tested up to: 5.3
+Stable tag: 1.02.00
 License: GNU GENERAL PUBLIC LICENSE
 License URI: http://www.gnu.org/licenses/gpl.html
 
@@ -20,6 +20,8 @@ an error message displayed indicating the coupon has been removed and the cart i
 cart totals can be adjusted through the standard WooCommerce jQuery and AJAX calls.
 
 == Changelog ==
+Version 1.02.00 - fix problem where coupon is sometimes removed even with correct domain. Tested up to WP core 5.3.
+
 Version 1.01.00 - update and correct checkout confirmations
 
 Version 1.00.00 - approved and released on WordPress.org

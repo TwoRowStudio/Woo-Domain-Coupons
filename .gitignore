@@ -26,6 +26,11 @@ $RECYCLE.BIN/
 # Operating System Files
 # =========================
 
+# =========================
+# Development Environment
+# =========================
+.distignore
+
 # OSX
 # =========================
 
