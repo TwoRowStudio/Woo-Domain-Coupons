@@ -30,6 +30,7 @@ $RECYCLE.BIN/
 # Development Environment
 # =========================
 .distignore
+*.zip
 
 # OSX
 # =========================
